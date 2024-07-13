@@ -162,7 +162,7 @@ namespace ObScript
 				char buffer[16];
 				std::uint32_t bufferSize = sizeof(buffer) / sizeof(char);
 
-				auto result = F4SE::WinAPI::GetComputerName(buffer, &bufferSize);
+				auto result = REX::W32::GetComputerNameA(buffer, &bufferSize);
 				return (result) ? buffer : "UNKNOWN"s;
 			}();
 
@@ -304,8 +304,8 @@ namespace ObScript
 				std::uint64_t QuadPart;
 			} ull;
 
-			ull.s.LowPart = a_file->fileInfo.modifyTime.dwLowDateTime;
-			ull.s.HighPart = a_file->fileInfo.modifyTime.dwHighDateTime;
+			ull.s.LowPart = a_file->fileInfo.modifyTime.lo;
+			ull.s.HighPart = a_file->fileInfo.modifyTime.hi;
 
 			return static_cast<std::time_t>(ull.QuadPart / 10000000ULL - 11644473600ULL);
 		}

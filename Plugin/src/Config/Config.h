@@ -3,6 +3,12 @@
 class Config
 {
 public:
+	class Fixes
+	{
+	public:
+		inline static DKUtil::Alias::Boolean bEnableOnStoryCraftItem{ "bEnableOnStoryCraftItem", "Fixes" };
+	};
+
 	class Patches
 	{
 	public:
@@ -14,6 +20,7 @@ public:
 	static void Load()
 	{
 		static auto Config = COMPILE_PROXY("BakaFramework.ini");
+		Config.Bind(Fixes::bEnableOnStoryCraftItem, true);
 		Config.Bind(Patches::bEnableLoadingEditorIDs, true);
 		Config.Bind(Patches::bEnableEDIDConflictCheck, false);
 		Config.Bind(Patches::sBetaCommentFileName, "BetaComment.txt");

@@ -3,19 +3,20 @@ if(NOT DEFINED ENV{STEAMWORKS_SDK})
 endif()
 
 cmake_path(SET STEAMWORKS_SDK NORMALIZE $ENV{STEAMWORKS_SDK}/steamworks_sdk_${MAJOR}${MINOR})
+
 if(NOT IS_DIRECTORY ${STEAMWORKS_SDK})
-	message(FATAL_ERROR "failed to find required version in STEAMWORKS_SDK")
+	message(FATAL_ERROR "failed to find required version in STEAMWORKS_SDK: " ${STEAMWORKS_SDK})
 endif()
 
 set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src)
 
 file(
 	COPY
-		${STEAMWORKS_SDK}/sdk/public
-		${CMAKE_CURRENT_LIST_DIR}/cmake/CMakeLists.txt
-		${CMAKE_CURRENT_LIST_DIR}/cmake/config.cmake.in
+	${STEAMWORKS_SDK}/sdk/public
+	${CMAKE_CURRENT_LIST_DIR}/cmake/CMakeLists.txt
+	${CMAKE_CURRENT_LIST_DIR}/cmake/config.cmake.in
 	DESTINATION
-		${SOURCE_PATH}
+	${SOURCE_PATH}
 )
 
 configure_file(

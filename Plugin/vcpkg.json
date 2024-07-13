@@ -1,14 +1,15 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-    "name": "bakaframework",
-    "homepage": "https://github.com/shad0wshayd3-FO4/BakaFramework",
-    "dependencies": [
-        "nlohmann-json",
-        "rsm-mmio",
-        "simpleini",
-        "spdlog",
-        "steamworks-sdk",
-        "tomlplusplus",
-        "xbyak"
-    ]
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "bakaframework",
+  "homepage": "https://github.com/shad0wshayd3-FO4/BakaFramework",
+  "dependencies": [
+    "nlohmann-json",
+    "rapidcsv",
+    "rsm-mmio",
+    "simpleini",
+    "spdlog",
+    "steamworks-sdk",
+    "tomlplusplus",
+    "xbyak"
+  ]
 }

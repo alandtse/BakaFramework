@@ -482,7 +482,7 @@ namespace ObScript
 
 				if (formType != RE::ENUM_FORM_ID::kNONE && formType != RE::ENUM_FORM_ID::kCELL)
 				{
-					auto& forms = TESDataHandler->formArrays[F4SE::stl::to_underlying(formType)];
+					auto& forms = TESDataHandler->formArrays[std::to_underlying(formType)];
 					for (auto iter : forms)
 					{
 						ShowHelp_Forms_Match(iter);
