@@ -23,7 +23,7 @@ A small plugin that exposes some new data to other mods, and fixes a few bugs.
   - Environment variable `STEAMWORKS_SDK` pointing to root directory where Steamworks SDK installed. For example, if in `C:\steamworks_sdk_160`, the value should be `C:\`. PS command:
 
 ```ps
-   $env:STEAMWORKS_SDK = 'C:\
+   $env:STEAMWORKS_SDK = 'C:\'
 ```
 
 ## User Requirements
