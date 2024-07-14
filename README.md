@@ -18,12 +18,12 @@ A small plugin that exposes some new data to other mods, and fixes a few bugs.
 - [Vcpkg](https://github.com/microsoft/vcpkg)
   - Install vcpkg using the directions in vcpkg's [Quick Start Guide](https://github.com/microsoft/vcpkg#quick-start-windows)
   - After install, add a new environment variable named `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
-- [Steamworkds SDK](https://partner.steamgames.com/downloads/list)
+- [Steamworks SDK](https://partner.steamgames.com/downloads/list)
   - Currently need Version 1.60. Other versions require changing [x64-windows-baka-steam.cmake](/Plugin/cmake/triplets/x64-windows-baka-steam.cmake)
   - Environment variable `STEAMWORKS_SDK` pointing to root directory where Steamworks SDK installed. For example, if in `C:\steamworks_sdk_160`, the value should be `C:\`. PS command:
 
 ```ps
-   $env:STEAMWORKS_SDK = 'C:\
+   $env:STEAMWORKS_SDK = 'C:\'
 ```
 
 ## User Requirements
