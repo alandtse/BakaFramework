@@ -161,7 +161,7 @@ function Resolve-Rules {
             foreach ($source in $Deployee.params[0..($Deployee.params.Length - 2)]) {
                 $source_tree += , "`'$(Resolve-RuleVar $source)`'"
             }
-            $script:RuleCmds += "Compress-Archive -Path $($source_tree -join ',') -DestinationPath `'$(Resolve-RuleVar $Deployee.params[-1])`' -Force -ErrorAction:SilentlyContinue"
+            $script:RuleCmds += "Compress-7Zip -Path $($source_tree -join ',') -ArchiveFileName  `'$(Resolve-RuleVar $Deployee.params[-1])`' -ErrorAction:SilentlyContinue"
             break
         }
         "remove" {
