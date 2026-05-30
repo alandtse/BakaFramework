@@ -90,6 +90,40 @@ namespace ObScript
 					{ return std::tolower(a_s) == std::tolower(a_m); });
 				return it != a_string.end();
 			}
+
+			// Returns true only when the page backing a_str is committed and readable.
+			// Guards against garbage SCRIPT_FUNCTION string pointers handed back when the
+			// engine's function table span over-runs its real end (seen on Fallout 4 VR),
+			// which would otherwise fault inside strlen/string_view construction.
+			static bool readable(const char* a_str) noexcept
+			{
+				if (!a_str)
+				{
+					return false;
+				}
+
+				::MEMORY_BASIC_INFORMATION mbi{};
+				if (::VirtualQuery(a_str, std::addressof(mbi), sizeof(mbi)) == 0)
+				{
+					return false;
+				}
+
+				if (mbi.State != MEM_COMMIT)
+				{
+					return false;
+				}
+
+				constexpr DWORD readMask =
+					PAGE_READONLY | PAGE_READWRITE | PAGE_WRITECOPY |
+					PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY;
+				return (mbi.Protect & readMask) != 0 && (mbi.Protect & PAGE_GUARD) == 0;
+			}
+
+			// Returns a view over a_str when it is safely readable, otherwise an empty view.
+			static std::string_view safe_sv(const char* a_str) noexcept
+			{
+				return readable(a_str) ? std::string_view{ a_str } : std::string_view{};
+			}
 		};
 
 		static bool Execute(
@@ -164,26 +198,21 @@ namespace ObScript
 			return true;
 		}
 
-		static void ShowHelp_Funcs_Print(RE::SCRIPT_FUNCTION a_function)
+		static void ShowHelp_Funcs_Print(const RE::SCRIPT_FUNCTION& a_function)
 		{
-			auto name = a_function.functionName;
-			auto nick = a_function.shortName;
-			auto help = a_function.helpString;
+			auto name = detail::safe_sv(a_function.functionName);
+			auto nick = detail::safe_sv(a_function.shortName);
+			auto help = detail::safe_sv(a_function.helpString);
 
-			if (!name)
-			{
-				return;
-			}
-
-			if (detail::strempty(name))
+			if (name.empty())
 			{
 				return;
 			}
 
 			std::string match;
-			if (help && !detail::strempty(help))
+			if (!help.empty())
 			{
-				if (nick && !detail::strempty(nick))
+				if (!nick.empty())
 				{
 					match = fmt::format("{:s} ({:s}) -> {:s}"sv, name, nick, help);
 				}
@@ -194,7 +223,7 @@ namespace ObScript
 			}
 			else
 			{
-				if (nick && !detail::strempty(nick))
+				if (!nick.empty())
 				{
 					match = fmt::format("{:s} ({:s})"sv, name, nick);
 				}
@@ -207,7 +236,7 @@ namespace ObScript
 			RE::ConsoleLog::GetSingleton()->PrintLine(match.data());
 		}
 
-		static void ShowHelp_Funcs_Match(RE::SCRIPT_FUNCTION a_function)
+		static void ShowHelp_Funcs_Match(const RE::SCRIPT_FUNCTION& a_function)
 		{
 			if (detail::strempty(m_MatchString))
 			{
@@ -215,11 +244,13 @@ namespace ObScript
 				return;
 			}
 
-			auto name = a_function.functionName;
-			auto nick = a_function.shortName;
-			auto help = a_function.helpString;
+			auto name = detail::safe_sv(a_function.functionName);
+			auto nick = detail::safe_sv(a_function.shortName);
+			auto help = detail::safe_sv(a_function.helpString);
 
-			if ((name && detail::strvicmp(name, m_MatchString)) || (nick && detail::strvicmp(nick, m_MatchString)) || (help && detail::strvicmp(help, m_MatchString)))
+			if ((!name.empty() && detail::strvicmp(name, m_MatchString)) ||
+				(!nick.empty() && detail::strvicmp(nick, m_MatchString)) ||
+				(!help.empty() && detail::strvicmp(help, m_MatchString)))
 			{
 				ShowHelp_Funcs_Print(a_function);
 			}
