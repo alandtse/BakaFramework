@@ -48,6 +48,7 @@ namespace Patches
 				return "error"sv;
 			}
 		}
+
 		static void AddToGameMap(RE::TESForm* a_this, const char* a_editorID)
 		{
 			const auto& [map, lock] = RE::TESForm::GetAllFormsByEditorID();

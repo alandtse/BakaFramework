@@ -20,7 +20,7 @@ function Normalize-Path {
     param (
         [string]$in
     )
-    
+
     $out = $in -replace '\\', '/'
     while ($out.Contains('//')) {
         $out = $out -replace '//', '/'
@@ -33,7 +33,7 @@ function Resolve-Files {
         [Parameter(ValueFromPipeline)][string]$parent = $PSScriptRoot,
         [string[]]$range = @('include', 'src', 'test')
     )
-    
+
     process {
         Push-Location $PSScriptRoot
         $_generated = [System.Collections.ArrayList]::new()
@@ -45,7 +45,7 @@ function Resolve-Files {
                 }
 
                 Get-ChildItem "$parent/$directory" -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
-                    ($_.Extension -in ($SourceExt + $DocsExt)) -and 
+                    ($_.Extension -in ($SourceExt + $DocsExt)) -and
                     ($_.Name -notmatch 'Plugin.h|Version.h')
                 } | Resolve-Path -Relative | ForEach-Object {
                     if (!$env:RebuildInvoke) {
@@ -53,10 +53,10 @@ function Resolve-Files {
                     }
                     $_generated.Add("`n`t`"$(Normalize-Path $_.Substring(2))`"") | Out-Null
                 }
-            }               
-            
+            }
+
             Get-ChildItem "$parent/dist" -Exclude "rules" | Get-ChildItem -File -Recurse -ErrorAction SilentlyContinue | Where-Object {
-                ($_.Extension -in ($ConfigExt + $DocsExt)) -and 
+                ($_.Extension -in ($ConfigExt + $DocsExt)) -and
                 ($_.Name -notmatch 'cmake|vcpkg')
             } | Resolve-Path -Relative | ForEach-Object {
                 if (!$env:RebuildInvoke) {
@@ -91,7 +91,7 @@ if ($Mode.ToUpper() -eq 'SOURCEGEN') {
     [IO.File]::WriteAllText("$Path/sourcelist.cmake", $generated)
 }
 
-$RuleVarTbl = @{ 
+$RuleVarTbl = @{
     config          = 'debug';
     cmake_output    = Normalize-Path ($Path + '/');
     dist            = Normalize-Path "$PSScriptRoot/dist/";
@@ -254,7 +254,7 @@ if ($Mode.ToUpper() -eq 'DISTRIBUTE') {
 
         Write-Host "`t...Ok"
     }
-    
+
     # deploy
     Write-Host "`tExecuting deploy rules..."
     & "$($RuleVarTbl.dist)/deploy-$($RuleVarTbl.config.ToLower()).ps1"

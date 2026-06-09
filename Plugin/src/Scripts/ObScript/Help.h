@@ -19,9 +19,9 @@ namespace ObScript
 			if (it != functions.end())
 			{
 				static std::array params{
-					RE::SCRIPT_PARAMETER{"matchstring (optional)", RE::SCRIPT_PARAM_TYPE::kChar, true},
-					RE::SCRIPT_PARAMETER{ "filter (optional)",     RE::SCRIPT_PARAM_TYPE::kInt,  true},
-					RE::SCRIPT_PARAMETER{ "form type (optional)",  RE::SCRIPT_PARAM_TYPE::kChar, true},
+					RE::SCRIPT_PARAMETER{ "matchstring (optional)", RE::SCRIPT_PARAM_TYPE::kChar, true },
+					RE::SCRIPT_PARAMETER{ "filter (optional)",      RE::SCRIPT_PARAM_TYPE::kInt,  true },
+					RE::SCRIPT_PARAMETER{ "form type (optional)",   RE::SCRIPT_PARAM_TYPE::kChar, true },
 				};
 
 				*it = RE::SCRIPT_FUNCTION{ "Help", "", it->output };
@@ -249,8 +249,8 @@ namespace ObScript
 			auto help = detail::safe_sv(a_function.helpString);
 
 			if ((!name.empty() && detail::strvicmp(name, m_MatchString)) ||
-				(!nick.empty() && detail::strvicmp(nick, m_MatchString)) ||
-				(!help.empty() && detail::strvicmp(help, m_MatchString)))
+			    (!nick.empty() && detail::strvicmp(nick, m_MatchString)) ||
+			    (!help.empty() && detail::strvicmp(help, m_MatchString)))
 			{
 				ShowHelp_Funcs_Print(a_function);
 			}

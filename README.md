@@ -53,7 +53,7 @@ cd BakaFramework
 
 ## License
 
-[GPL-3.0-or-later](COPYING) WITH [Modding Exception AND GPL-3.0 Linking Exception (with Corresponding Source)](EXCEPTIONS).  
+[GPL-3.0-or-later](COPYING) WITH [Modding Exception AND GPL-3.0 Linking Exception (with Corresponding Source)](EXCEPTIONS).
 Specifically, the Modded Code is Fallout 4 (and its variants) and Modding Libraries include [F4SE/VR](https://f4se.silverlock.org/), [CommonlibF4](https://github.com/alandtse/CommonLibF4) (and variants), and [DKUtil](https://github.com/gottyduke/DKUtil).
 
 ## Credits

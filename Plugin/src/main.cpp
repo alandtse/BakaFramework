@@ -19,12 +19,14 @@ namespace
 		{
 		case F4SE::MessagingInterface::kPostLoad:
 		{
-			if (!RuntimeCompat::IsVR()) Forms::Install();
+			if (!RuntimeCompat::IsVR())
+				Forms::Install();
 			break;
 		}
 		case F4SE::MessagingInterface::kGameLoaded:
 		{
-			if (RuntimeCompat::IsVR()) Forms::Install(); // VR crashes if this is too early
+			if (RuntimeCompat::IsVR())
+				Forms::Install();  // VR crashes if this is too early
 			break;
 		}
 		case F4SE::MessagingInterface::kGameDataReady:
