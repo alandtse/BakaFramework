@@ -1,8 +1,14 @@
 [Bb]uild/
 .vs/
 .vscode/
+node_modules/
 *.zip
 *.timestamp
 *.log
 deploy-*.ps1
-Plugin/
+Plugin/dist/*.dll
+Plugin/dist/*.exp
+Plugin/dist/*.lib
+Plugin/dist/*.pdb
+Plugin/dist/*.7z
+Plugin/dist/Data/
