@@ -1,0 +1,54 @@
+name: "_build"
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: "Name for the uploaded build artifact"
+        type: string
+        default: baka-framework-build
+      ref:
+        description: "Optional git ref to build"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (MSVC)
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          submodules: recursive
+
+      - name: Set up vcpkg
+        uses: lukka/run-vcpkg@v11
+
+      - name: Build
+        shell: pwsh
+        run: ./build-msvc.bat
+
+      - name: Stage artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          if (Test-Path "build/Release") {
+            Copy-Item -Recurse -Force "build/Release/*" "staging/"
+          }
+          if (Test-Path "Plugin/dist") {
+            Copy-Item -Recurse -Force "Plugin/dist/*" "staging/"
+          }
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: staging/*
+          if-no-files-found: error
+          retention-days: 30
