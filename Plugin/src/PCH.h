@@ -116,6 +116,38 @@ using namespace std::literals;
 // Plugin
 #include "Plugin.h"
 
+namespace RuntimeCompat
+{
+	[[nodiscard]] inline bool IsVR() noexcept
+	{
+		return REL::Module::get().filename().find(L"Fallout4VR.exe") != std::wstring::npos;
+	}
+
+	[[nodiscard]] inline bool IsNG() noexcept
+	{
+		return !IsVR() && REL::Module::get().version() >= F4SE::RUNTIME_1_10_980;
+	}
+}
+
+// DKUtil compatibility for newer CommonLibF4 REL::Module API.
+#if defined(F4SEAPI)
+#	if !defined(LOG_PATH)
+#		define LOG_PATH "My Games\\Fallout4\\F4SE"sv
+#	endif
+#	if !defined(LOG_PATH_VR)
+#		define LOG_PATH_VR "My Games\\Fallout4VR\\F4SE"sv
+#	endif
+#	if !defined(IS_VR)
+#		define IS_VR RuntimeCompat::IsVR()
+#	endif
+#	if !defined(IS_F4)
+#		define IS_F4 (!IS_VR)
+#	endif
+#	if !defined(IS_NG)
+#		define IS_NG RuntimeCompat::IsNG()
+#	endif
+#endif
+
 // DKUtil
 #include "DKUtil/Config.hpp"
 #include "DKUtil/Hook.hpp"

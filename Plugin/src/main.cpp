@@ -19,12 +19,12 @@ namespace
 		{
 		case F4SE::MessagingInterface::kPostLoad:
 		{
-			if (!REL::Module::IsVR()) Forms::Install();
+			if (!RuntimeCompat::IsVR()) Forms::Install();
 			break;
 		}
 		case F4SE::MessagingInterface::kGameLoaded:
 		{
-			if (REL::Module::IsVR()) Forms::Install(); //VR crashes if this is too early
+			if (RuntimeCompat::IsVR()) Forms::Install(); // VR crashes if this is too early
 			break;
 		}
 		case F4SE::MessagingInterface::kGameDataReady:
@@ -54,7 +54,9 @@ DLLEXPORT bool F4SEAPI F4SEPlugin_Query(const F4SE::QueryInterface* a_F4SE, F4SE
 	a_info->version = Plugin::Version;
 
 	const auto rtv = a_F4SE->RuntimeVersion();
-	if (rtv < (REL::Relocate(F4SE::RUNTIME_1_10_163, F4SE::RUNTIME_LATEST, F4SE::RUNTIME_LATEST_VR)))
+	constexpr REL::Version VR_MIN_RUNTIME{ 1, 2, 72, 0 };
+	const auto minRuntime = RuntimeCompat::IsVR() ? VR_MIN_RUNTIME : F4SE::RUNTIME_1_10_163;
+	if (rtv < minRuntime)
 	{
 		F4SE::stl::report_and_fail(
 			fmt::format(

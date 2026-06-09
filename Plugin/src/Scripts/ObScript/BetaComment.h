@@ -127,7 +127,7 @@ namespace ObScript
 		static bool PrintCurrentTime(std::stringstream& a_buf)
 		{
 			auto currentTime_t = std::time(nullptr);
-			auto currentTime = fmt::format("{:%m/%d/%y (%H:%M)}"sv, fmt::localtime(currentTime_t));
+			auto currentTime = fmt::format("{:%m/%d/%y (%H:%M)}"sv, ToLocalTime(currentTime_t));
 			DEBUG("CurrentTime: {:s}"sv, currentTime);
 
 			a_buf << currentTime << _delim;
@@ -140,7 +140,7 @@ namespace ObScript
 			if (file)
 			{
 				auto fileName = file->GetFilename();
-				auto fileTime = fmt::format("{:%m/%d/%y (%H:%M)}"sv, fmt::localtime(GetFileTime(file)));
+				auto fileTime = fmt::format("{:%m/%d/%y (%H:%M)}"sv, ToLocalTime(GetFileTime(file)));
 				DEBUG("File Name: {:s}"sv, fileName);
 				DEBUG("File Time: {:s}"sv, fileTime);
 
@@ -308,6 +308,13 @@ namespace ObScript
 			ull.s.HighPart = a_file->fileInfo.modifyTime.hi;
 
 			return static_cast<std::time_t>(ull.QuadPart / 10000000ULL - 11644473600ULL);
+		}
+
+		[[nodiscard]] static std::tm ToLocalTime(std::time_t a_time)
+		{
+			std::tm localTime{};
+			localtime_s(&localTime, &a_time);
+			return localTime;
 		}
 
 		static constexpr auto LONG_NAME = "BetaComment"sv;
