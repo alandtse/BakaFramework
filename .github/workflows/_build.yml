@@ -11,6 +11,10 @@ on:
         description: "Optional git ref to build"
         type: string
         default: ""
+    outputs:
+      artifact-name:
+        description: "Artifact name uploaded by this workflow"
+        value: ${{ inputs.artifact-name }}
 
 permissions:
   contents: read

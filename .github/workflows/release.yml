@@ -16,6 +16,7 @@ jobs:
   semantic-release:
     name: Semantic Release
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'alandtse'
     permissions:
       contents: write
     outputs:
@@ -54,3 +55,49 @@ jobs:
     with:
       ref: ${{ needs.semantic-release.outputs.new_release_git_tag }}
       artifact-name: baka-framework-release-${{ needs.semantic-release.outputs.new_release_version }}
+
+  package:
+    name: Package and publish
+    needs: [semantic-release, build]
+    if: needs.semantic-release.outputs.new_release_published == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact-name }}
+          path: bin
+
+      - name: Upload release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.semantic-release.outputs.new_release_git_tag }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(bin/*.7z)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::No .7z artifacts found in downloaded build output"
+            exit 1
+          fi
+
+          for archive in "${files[@]}"; do
+            gh release upload "$TAG" "$archive" --clobber
+          done
+          gh release edit "$TAG" --draft=false
+
+  nexus:
+    name: Nexus upload
+    needs: [semantic-release, build, package]
+    if: needs.semantic-release.outputs.new_release_published == 'true'
+    uses: ./.github/workflows/nexus-upload.yml
+    with:
+      tag: ${{ needs.semantic-release.outputs.new_release_git_tag }}
+      dry_run: ${{ vars.NEXUS_AUTO_UPLOAD == 'true' && 'false' || 'true' }}
+      changelog: ${{ needs.semantic-release.outputs.new_release_notes }}
+    secrets:
+      UNEX_NEXUSMODS_SESSION_COOKIE: ${{ secrets.UNEX_NEXUSMODS_SESSION_COOKIE }}
+      UNEX_APIKEY: ${{ secrets.UNEX_APIKEY }}
