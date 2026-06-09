@@ -3,4 +3,6 @@
 .vscode/
 *.zip
 *.timestamp
+*.log
 deploy-*.ps1
+Plugin/
