@@ -36,6 +36,10 @@ jobs:
         with:
           vcpkgJsonGlob: Plugin/vcpkg.json
 
+      - name: Install 7Zip4PowerShell
+        shell: pwsh
+        run: Install-Module -Name 7Zip4PowerShell -Force -Scope CurrentUser
+
       - name: Build
         shell: pwsh
         env:
