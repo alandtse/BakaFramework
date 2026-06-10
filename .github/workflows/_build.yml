@@ -36,15 +36,17 @@ jobs:
         with:
           vcpkgJsonGlob: Plugin/vcpkg.json
 
-      - name: Install 7Zip4PowerShell
-        shell: pwsh
-        run: Install-Module -Name 7Zip4PowerShell -Force -Scope CurrentUser
-
       - name: Build
         shell: pwsh
         env:
           VCPKG_BINARY_SOURCES: "clear"
         run: ./build-msvc.bat
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $version = (Select-String -Path Plugin/CMakeLists.txt -Pattern 'VERSION\s+(\d+\.\d+\.\d+)').Matches[0].Groups[1].Value
+          7z a "Plugin/dist/BakaFramework.v$version.7z" "Plugin/dist/Data"
 
       - name: Stage artifacts
         shell: pwsh
