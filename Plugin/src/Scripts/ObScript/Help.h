@@ -627,12 +627,17 @@ namespace ObScript
 		static void ShowHelp_Cells_Build()
 		{
 			auto TESDataHandler = RE::TESDataHandler::GetSingleton();
-			for (auto iter : TESDataHandler->compiledFileCollection.files)
+			auto collection = TESDataHandler->GetCompiledFileCollection();
+			if (!collection)
+			{
+				return;
+			}
+			for (auto iter : collection->files)
 			{
 				ShowHelp_Cells_Match(iter);
 			}
 
-			for (auto iter : TESDataHandler->compiledFileCollection.smallFiles)
+			for (auto iter : collection->smallFiles)
 			{
 				ShowHelp_Cells_Match(iter);
 			}
