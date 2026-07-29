@@ -36,6 +36,12 @@ jobs:
         with:
           vcpkgJsonGlob: Plugin/vcpkg.json
 
+      # Plugin/dist/rules/publish_package.json's Release-only "package" rule calls
+      # Compress-7Zip during the MSBuild post-build step; not preinstalled on the runner.
+      - name: Install 7Zip4PowerShell
+        shell: pwsh
+        run: Install-Module -Name 7Zip4PowerShell -Force -Scope CurrentUser
+
       - name: Build
         shell: pwsh
         env:
