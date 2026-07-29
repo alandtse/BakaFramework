@@ -18,7 +18,9 @@ jobs:
     name: pre-commit
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@v5
         with:
